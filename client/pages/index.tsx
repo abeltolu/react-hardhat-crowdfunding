@@ -1,7 +1,7 @@
-import { CampaignCard } from "@/components/campaign/card";
 import { MainHeader } from "@/components/header/header";
 import { CampaignsList } from "@/containers/home/campaigns";
-import { Box, Text, Container, SimpleGrid, Title } from "@mantine/core";
+import { Layout } from "@/containers/layout";
+import { Box } from "@mantine/core";
 
 //header
 //logo
@@ -12,9 +12,8 @@ import { Box, Text, Container, SimpleGrid, Title } from "@mantine/core";
 
 export default function Home() {
   return (
-    <Box>
-      <MainHeader />
+    <Layout>
       <CampaignsList />
-    </Box>
+    </Layout>
   );
 }

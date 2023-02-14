@@ -2,7 +2,7 @@ import { CampaignCard } from "@/components/campaign/card";
 import { Text, Container, SimpleGrid, Title } from "@mantine/core";
 export const CampaignsList = () => {
   return (
-    <Container py={"lg"}>
+    <Container>
       <Title order={3} mb="lg">
         Campaigns{" "}
         <Text color={"red"} component="span">

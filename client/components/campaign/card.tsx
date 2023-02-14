@@ -1,10 +1,11 @@
 import { Card, Image, Text, Stack, Flex, Group, useMantineTheme } from "@mantine/core";
 import { Folder } from "tabler-icons-react";
 import Blockies from "react-blockies";
+import Link from "next/link";
 
 export const CampaignCard = () => {
   return (
-    <Card shadow="sm" p="lg" radius="md" withBorder>
+    <Card shadow="sm" p="lg" radius="md" withBorder component={Link} href="/details/1">
       <Card.Section>
         <Image
           src="https://images.unsplash.com/photo-1527004013197-933c4bb611b3?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=720&q=80"
