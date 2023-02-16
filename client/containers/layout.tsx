@@ -6,11 +6,13 @@ export const Layout = ({ children }: { children: ReactNode }) => {
   const theme = useMantineTheme();
   return (
     <AppShell
-      styles={{
-        main: {
-          background: theme.colorScheme === "dark" ? theme.colors.dark[8] : theme.colors.gray[0],
-        },
-      }}
+      styles={
+        {
+          // main: {
+          //   background: theme.colorScheme === "dark" ? theme.colors.dark[8] : theme.colors.gray[0],
+          // },
+        }
+      }
       header={<MainHeader />}
       fixed={false}
     >

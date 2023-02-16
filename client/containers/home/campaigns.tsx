@@ -5,7 +5,7 @@ export const CampaignsList = () => {
     <Container>
       <Title order={3} mb="lg">
         Campaigns{" "}
-        <Text color={"red"} component="span">
+        <Text color={"red"} span>
           (4)
         </Text>
       </Title>
