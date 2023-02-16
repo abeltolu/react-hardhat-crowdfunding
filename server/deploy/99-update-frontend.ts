@@ -4,7 +4,7 @@ import { DeployFunction } from "hardhat-deploy/types";
 import { HardhatRuntimeEnvironment } from "hardhat/types";
 import fs from "fs";
 import { ethers, getChainId } from "hardhat";
-import { frontEndAbiFile, frontEndContractsFile } from "../hardhat.helper";
+import { frontEndAbiFile, frontEndContractsFile, contractTypesFolder, frontEndTypesFolder } from "../hardhat.helper";
 
 async function updateAbi() {
   const contract = await ethers.getContract("CrowdFunding");
@@ -25,11 +25,16 @@ async function updateContractAddresses() {
   fs.writeFileSync(frontEndContractsFile, JSON.stringify(contractAddresses));
 }
 
+async function copyTypes() {
+  fs.cpSync(contractTypesFolder, frontEndTypesFolder, { recursive: true });
+}
+
 const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   if (process.env.UPDATE_FRONT_END) {
     console.log("Writing to front end...");
     await updateContractAddresses();
     await updateAbi();
+    await copyTypes();
     console.log("Front end written!");
   }
 };

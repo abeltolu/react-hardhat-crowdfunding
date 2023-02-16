@@ -1,8 +1,8 @@
-import { getAddress } from "ethers";
+import { utils } from "ethers";
 
 export function shortenAddress(address: string): string {
   try {
-    const formattedAddress = getAddress(address);
+    const formattedAddress = utils.getAddress(address);
     return shortenString(formattedAddress);
   } catch {
     throw new TypeError("Address can't be parsed");

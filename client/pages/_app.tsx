@@ -2,6 +2,7 @@ import "@/styles/globals.css";
 import { MantineProvider } from "@mantine/core";
 import type { AppProps } from "next/app";
 import { Inter } from "@next/font/google";
+import { CrowdFundingProvider } from "@/context/crowdfunding";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -23,7 +24,9 @@ export default function App({ Component, pageProps }: AppProps) {
         withGlobalStyles
         withNormalizeCSS
       >
-        <Component {...pageProps} />
+        <CrowdFundingProvider>
+          <Component {...pageProps} />
+        </CrowdFundingProvider>
       </MantineProvider>
     </>
   );
