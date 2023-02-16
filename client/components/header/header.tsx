@@ -1,8 +1,12 @@
 import { Button, Container, Flex, Group, Header, Input, Text, MediaQuery, Anchor } from "@mantine/core";
 import { Search } from "tabler-icons-react";
 import Link from "next/link";
+import { useCrowdFundingContext } from "@/hooks/useContext";
+import { shortenAddress } from "@/utils/dapp";
+import Blockies from "react-blockies";
 
 export const MainHeader = () => {
+  const { address, handleConnect, handleDisconnect } = useCrowdFundingContext();
   return (
     <Header height={{}} p="md">
       <Container>
@@ -18,7 +22,19 @@ export const MainHeader = () => {
             </MediaQuery>
           </Flex>
           <Flex justify={"flex-end"}>
-            <Button>Connect Wallet</Button>
+            {address ? (
+              <Group>
+                <Button>Start Campaign</Button>
+                <Button variant="subtle" onClick={handleDisconnect}>
+                  <Group spacing={"xs"}>
+                    <Blockies seed={address} size={8} scale={3} className={"rounded-full"} />
+                    {shortenAddress(address)}
+                  </Group>
+                </Button>
+              </Group>
+            ) : (
+              <Button onClick={handleConnect}>Connect Wallet</Button>
+            )}
           </Flex>
         </Group>
       </Container>
