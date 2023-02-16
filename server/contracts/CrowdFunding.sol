@@ -27,6 +27,7 @@ contract CrowdFunding {
     address funderAddress;
     uint256 amount;
     uint timestamp;
+    string message;
   }
 
   struct Withdrawal {
@@ -138,7 +139,7 @@ contract CrowdFunding {
     return false;
   }
 
-  function fundCampaign(uint256 _campaignId) public payable validCampaign(_campaignId) {
+  function fundCampaign(uint256 _campaignId, string memory _message) public payable validCampaign(_campaignId) {
     Campaign storage campaign = campaigns[_campaignId];
     if (isBefore(campaign.endDate, block.timestamp)) revert("CrowdFunding: Campaign has ended.");
     if (campaign.status == CampaignStatus.CLOSED) revert("CrowdFunding: Campaign is closed.");
@@ -148,7 +149,8 @@ contract CrowdFunding {
     campaign.funders[campaign.fundersCount] = CampaignFunder({
       funderAddress: msg.sender,
       amount: msg.value,
-      timestamp: block.timestamp
+      timestamp: block.timestamp,
+      message: _message
     });
     campaign.fundersCount++;
 

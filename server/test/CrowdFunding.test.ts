@@ -90,7 +90,7 @@ describe("CrowdFunding", function () {
       const { ownerContract } = await loadFixture(crowdFundingFixture);
       const { campaignId } = await loadFixture(runContractFixture);
       const amount = ethers.utils.parseEther("0.1");
-      const tx = await ownerContract.fundCampaign(campaignId, {
+      const tx = await ownerContract.fundCampaign(campaignId, "Love your campaign", {
         value: amount,
       });
       await tx.wait(1);
@@ -106,7 +106,7 @@ describe("CrowdFunding", function () {
       await delay(10000); //wait for 10seconds to beat end date of 5seconds
       const amount = ethers.utils.parseEther("0.1");
       await expect(
-        ownerContract.fundCampaign(campaignId2, {
+        ownerContract.fundCampaign(campaignId2, "Love your campaign", {
           value: amount,
         })
       ).to.revertedWith("CrowdFunding: Campaign has ended.");
@@ -138,7 +138,7 @@ describe("CrowdFunding", function () {
       const campaignId = (tx1Receipt as any).events[0].args.campaignId;
 
       const amount = ethers.utils.parseEther("0.1");
-      const tx2 = await ownerContract.fundCampaign(campaignId, {
+      const tx2 = await ownerContract.fundCampaign(campaignId, "Love your campaign", {
         value: amount,
       });
       await tx2.wait(1);
