@@ -4,10 +4,12 @@ import Link from "next/link";
 import { useCrowdFundingContext } from "@/hooks/useContext";
 import { shortenAddress } from "@/utils/dapp";
 import Blockies from "react-blockies";
-import { CreateCampaignDrawer } from "../campaign/createCampaign";
+import CreateCampaignDrawer from "../campaign/createCampaign";
+//const CreateCampaignDrawer = dynamic(() => import("../campaign/createCampaign"), { ssr: false });
 import { useState } from "react";
+import dynamic from "next/dynamic";
 
-export const MainHeader = () => {
+export default function MainHeader() {
   const [openDrawer, setOpenDrawer] = useState(false);
   const { address, handleConnect, handleDisconnect } = useCrowdFundingContext();
   return (
@@ -44,4 +46,4 @@ export const MainHeader = () => {
       <CreateCampaignDrawer opened={openDrawer} toggleOpen={setOpenDrawer} />
     </Header>
   );
-};
+}

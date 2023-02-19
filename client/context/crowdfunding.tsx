@@ -1,9 +1,7 @@
 import { CrowdFunding } from "@/contract/types/CrowdFunding";
 import { LoadingOverlay } from "@mantine/core";
-import { ethers } from "ethers";
 import { createContext, ReactNode, useCallback, useEffect, useMemo, useState } from "react";
-import { useMoralis } from "react-moralis";
-import { useAccount, useConnect, useContract, useDisconnect, useNetwork, useProvider } from "wagmi";
+import { useAccount, useConnect, useContract, useDisconnect, useNetwork, useProvider, useSigner } from "wagmi";
 import CrowdFundingAbi from "../contract/abi.json";
 import contractAddresses from "../contract/addresses.json";
 
@@ -24,22 +22,6 @@ export const CrowdFundingContext = createContext<CrowdFundingContextProps>({
 });
 
 export default function CrowdFundingProvider({ children }: { children: ReactNode }) {
-  //   const [campaigns, setCampaigns] = useState<CrowdFunding.CampaignSummaryStruct[]>([]);
-  //   const { enableWeb3, account, isWeb3Enabled, Moralis, deactivateWeb3, chainId: chainIdHex, web3 } = useMoralis();
-  //   const chainId = useMemo(() => {
-  //     return chainIdHex ? parseInt(chainIdHex) : undefined;
-  //   }, [chainIdHex]);
-
-  //   const crowdFunderContract = useMemo(() => {
-  //     if (!account || !isWeb3Enabled || !web3 || !contractAddress) return undefined;
-
-  //     const signer = web3.getSigner();
-  //     const contract = new ethers.Contract(contractAddress, CrowdFundingAbi, signer as unknown as ethers.Signer);
-  //     return contract as CrowdFunding;
-  //   }, [account, isWeb3Enabled, web3, contractAddress]);
-  //   const getCampaigns = useCallback(() => {
-  //     if (!crowdFunderContract) return;
-  //   }, []);
   const { chain } = useNetwork();
   const { connector: activeConnector, isConnected, address, isConnecting } = useAccount();
   const { connectors, isLoading, connectAsync } = useConnect();
@@ -59,23 +41,15 @@ export default function CrowdFundingProvider({ children }: { children: ReactNode
     await disconnectAsync();
   }, []);
   const provider = useProvider();
+  const signer = useSigner();
   const crowdFunderContract = useContract({
     address: contractAddress,
     abi: CrowdFundingAbi,
-    signerOrProvider: provider,
+    signerOrProvider: signer?.data,
   }) as CrowdFunding;
-  useEffect(() => {
-    async function readCampaigns() {
-      return await crowdFunderContract.allCampaigns();
-    }
-    if (crowdFunderContract) {
-      console.log({ crowdFunderContract });
-      readCampaigns()
-        .then((campaigns) => console.log("campaigns === ", campaigns))
-        .catch((err) => console.error("Err === ", err));
-    }
-  }, [crowdFunderContract]);
+
   console.log({ chain, isConnected, connectors, activeConnector, isConnecting, isLoading });
+  if (signer.isLoading || !signer.data) return null;
   return (
     <>
       <CrowdFundingContext.Provider

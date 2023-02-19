@@ -1,9 +1,11 @@
-import { ReactNode, useState } from "react";
-import { AppShell, Navbar, Header, Footer, Aside, Text, MediaQuery, Burger, useMantineTheme } from "@mantine/core";
-import { MainHeader } from "@/components/header/header";
+import { ReactNode } from "react";
+import { AppShell, useMantineTheme } from "@mantine/core";
+//import { MainHeader } from "@/components/header/header";
+import dynamic from "next/dynamic";
+const MainHeader = dynamic(() => import("../components/header/header"), { ssr: false });
 
 export const Layout = ({ children }: { children: ReactNode }) => {
-  const theme = useMantineTheme();
+  //const theme = useMantineTheme();
   return (
     <AppShell
       styles={

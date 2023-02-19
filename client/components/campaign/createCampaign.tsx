@@ -1,3 +1,5 @@
+import { useContractReadWrite } from "@/hooks/useContext";
+import { CreateCampaignFormValues } from "@/types/campaign";
 import {
   Drawer,
   Select,
@@ -12,20 +14,13 @@ import {
 } from "@mantine/core";
 import { DatePicker } from "@mantine/dates";
 import { useForm, joiResolver } from "@mantine/form";
+import { utils } from "ethers";
 import Joi from "joi";
+import { useCallback } from "react";
 
 interface IProps {
   opened: boolean;
   toggleOpen: (val: boolean) => void;
-}
-interface IFormValues {
-  title: string;
-  category: string;
-  description: string;
-  story: string;
-  goal: number;
-  image: File | null;
-  endDate: Date | null;
 }
 
 const createCampaignSchema = Joi.object({
@@ -37,12 +32,36 @@ const createCampaignSchema = Joi.object({
   image: Joi.object().instance(File).required().label("Image"),
   endDate: Joi.date().iso().required().label("End Date"),
 });
-export const CreateCampaignDrawer = ({ opened, toggleOpen }: IProps) => {
+export default function CreateCampaignDrawer({ opened, toggleOpen }: IProps) {
   const theme = useMantineTheme();
-  const form = useForm<IFormValues>({
-    initialValues: { title: "", category: "", description: "", story: "", goal: 0, image: null, endDate: null },
+  const { loading, fetcher, error } = useContractReadWrite();
+  const form = useForm<CreateCampaignFormValues>({
+    initialValues: { title: "", category: "", description: "", story: "", goal: 0, image: null, endDate: new Date() },
     validate: joiResolver(createCampaignSchema),
   });
+  console.log("Submit Values === ", {
+    loading,
+    error,
+  });
+  const handleSubmit = useCallback(
+    async (values: CreateCampaignFormValues) => {
+      const data = await fetch("/api/hello").then((r) => r.json());
+      console.log("Fetcher data === ", data);
+      await fetcher(
+        "createCampaign",
+        values.title,
+        values.category,
+        values.description,
+        values.story,
+        "https://images.unsplash.com/photo-1527004013197-933c4bb611b3?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=720&q=8",
+        utils.parseEther(values.goal.toString()),
+        Math.floor(values.endDate.getTime() / 1000)
+      )
+        .then((r) => console.log("Final result === ", r))
+        .catch((err) => console.log("Final Error === ", err));
+    },
+    [fetcher]
+  );
   return (
     <Drawer
       opened={opened}
@@ -54,8 +73,9 @@ export const CreateCampaignDrawer = ({ opened, toggleOpen }: IProps) => {
       title="Create Campaign"
       padding="xl"
       size="xl"
+      closeOnClickOutside={false}
     >
-      <form onSubmit={form.onSubmit((values) => console.log(values))}>
+      <form onSubmit={form.onSubmit(handleSubmit)}>
         <Stack>
           <TextInput label="Title" placeholder="Write a title" withAsterisk {...form.getInputProps("title")} />
           <Select
@@ -125,13 +145,15 @@ export const CreateCampaignDrawer = ({ opened, toggleOpen }: IProps) => {
             {...form.getInputProps("endDate")}
           />
           <Group position="apart">
-            <Button variant="white" p="0" color="red" type="reset" onClick={() => toggleOpen(false)}>
+            <Button variant="white" p="0" color="red" type="reset" disabled={loading} onClick={() => toggleOpen(false)}>
               Cancel
             </Button>
-            <Button type="submit">Submit</Button>
+            <Button type="submit" loading={loading} disabled={loading}>
+              Submit
+            </Button>
           </Group>
         </Stack>
       </form>
     </Drawer>
   );
-};
+}

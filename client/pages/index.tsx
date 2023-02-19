@@ -1,7 +1,8 @@
-import { MainHeader } from "@/components/header/header";
 import { CampaignsList } from "@/containers/home/campaigns";
 import { Layout } from "@/containers/layout";
-import { Box } from "@mantine/core";
+import { CrowdFunding } from "@/contract/types";
+import { useContractReadWrite } from "@/hooks/useContext";
+import { useEffect } from "react";
 
 //header
 //logo
@@ -11,6 +12,12 @@ import { Box } from "@mantine/core";
 //campaigns
 
 export default function Home() {
+  const { loading, fetcher, data, error } = useContractReadWrite<Array<CrowdFunding.CampaignSummaryStruct>>();
+  useEffect(() => {
+    fetcher("allCampaigns");
+  }, [fetcher]);
+
+  console.log({ loading, fetcher, data, error });
   return (
     <Layout>
       <CampaignsList />
