@@ -4,8 +4,11 @@ import Link from "next/link";
 import { useCrowdFundingContext } from "@/hooks/useContext";
 import { shortenAddress } from "@/utils/dapp";
 import Blockies from "react-blockies";
+import { CreateCampaignDrawer } from "../campaign/createCampaign";
+import { useState } from "react";
 
 export const MainHeader = () => {
+  const [openDrawer, setOpenDrawer] = useState(false);
   const { address, handleConnect, handleDisconnect } = useCrowdFundingContext();
   return (
     <Header height={{}} p="md">
@@ -24,7 +27,7 @@ export const MainHeader = () => {
           <Flex justify={"flex-end"}>
             {address ? (
               <Group>
-                <Button>Start Campaign</Button>
+                <Button onClick={() => setOpenDrawer(true)}>Start Campaign</Button>
                 <Button variant="subtle" onClick={handleDisconnect}>
                   <Group spacing={"xs"}>
                     <Blockies seed={address} size={8} scale={3} className={"rounded-full"} />
@@ -38,6 +41,7 @@ export const MainHeader = () => {
           </Flex>
         </Group>
       </Container>
+      <CreateCampaignDrawer opened={openDrawer} toggleOpen={setOpenDrawer} />
     </Header>
   );
 };
